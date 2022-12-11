@@ -1,1 +1,3 @@
-console.info("npm-project-template");
+import { ServiceCollection } from "./extensions";
+
+export { ServiceCollection };

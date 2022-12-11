@@ -35,5 +35,9 @@
     "ts-jest": "^29.0.3",
     "ts-node": "^10.9.1",
     "typescript": "^4.8.4"
+  },
+  "dependencies": {
+    "@amaic/dijs": "^0.8.0",
+    "@amaic/dijs-abstractions": "^0.8.0"
   }
 }
