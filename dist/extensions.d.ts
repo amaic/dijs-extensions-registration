@@ -6,4 +6,3 @@ declare module "@amaic/dijs" {
     }
 }
 export { ServiceCollection };
-//# sourceMappingURL=extensions.d.ts.map
