@@ -3,7 +3,7 @@ import "../src";
 
 describe("extensions", () =>
 {
-    test("register transient class", () =>
+    test("register transient service with class", () =>
     {
         const serviceCollection = new ServiceCollection();
 
@@ -26,6 +26,26 @@ describe("extensions", () =>
         expect(bar.Foo.FooTest()).toBe("foo");
     });
 
+    test("register transient service with factory", () =>
+    {
+        const serviceCollection = new ServiceCollection();
+
+        serviceCollection.RegisterTransientFactory<IFoo>(IFooIdentifier, sp => new Foo());
+
+        serviceCollection.RegisterTransientFactory<IBar>(IBarIdentifier, sp => new Bar(sp.GetRequiredService<IFoo>(IFooIdentifier)));
+
+        const serviceProvider = serviceCollection.CreateServiceProvider();
+
+        const bar = serviceProvider.GetRequiredService<IBar>(IBarIdentifier);
+
+        expect(bar).toBeInstanceOf(Bar);
+
+        expect(bar.BarTest()).toBe("bar");
+
+        expect(bar.Foo).toBeInstanceOf(Foo);
+
+        expect(bar.Foo.FooTest()).toBe("foo");
+    });
 });
 
 const IFooIdentifier = Symbol();
