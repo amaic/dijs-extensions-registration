@@ -46,16 +46,79 @@ describe("extensions", () =>
 
         expect(bar.Foo.FooTest()).toBe("foo");
     });
+
+    test("register transient named service with class", () =>
+    {
+        const serviceCollection = new ServiceCollection();
+
+        serviceCollection.RegisterTransientNamedClass<IFoo, typeof Foo>(IFooIdentifier, Foo, (ct, sp, name) =>
+            new ct(name)
+        );
+
+        serviceCollection.RegisterTransientNamedClass<IBar, typeof Bar>(IBarIdentifier, Bar, (ct, sp, name) =>
+            new ct(sp.GetRequiredService<IFoo>(IFooIdentifier, name), name)
+        );
+
+        const serviceProvider = serviceCollection.CreateServiceProvider();
+
+        const bar = serviceProvider.GetRequiredService<IBar>(IBarIdentifier, "test");
+
+        expect(bar).toBeInstanceOf(Bar);
+
+        expect(bar.BarTest()).toBe("bar");
+
+        expect(bar.Name).toBe("test");
+
+        expect(bar.Foo).toBeInstanceOf(Foo);
+
+        expect(bar.Foo.FooTest()).toBe("foo");
+
+        expect(bar.Foo.Name).toBe("test");
+    });
+
+    test("register transient named service with factory", () =>
+    {
+        const serviceCollection = new ServiceCollection();
+
+        serviceCollection.RegisterTransientNamedFactory<IFoo>(IFooIdentifier, (sp, name) => new Foo(name));
+
+        serviceCollection.RegisterTransientNamedFactory<IBar>(IBarIdentifier, (sp,name) => new Bar(sp.GetRequiredService<IFoo>(IFooIdentifier, name), name));
+
+        const serviceProvider = serviceCollection.CreateServiceProvider();
+
+        const bar = serviceProvider.GetRequiredService<IBar>(IBarIdentifier, "test");
+
+        expect(bar).toBeInstanceOf(Bar);
+
+        expect(bar.BarTest()).toBe("bar");
+
+        expect(bar.Name).toBe("test");
+
+        expect(bar.Foo).toBeInstanceOf(Foo);
+
+        expect(bar.Foo.FooTest()).toBe("foo");
+
+        expect(bar.Foo.Name).toBe("test");
+    });
 });
 
 const IFooIdentifier = Symbol();
 interface IFoo
 {
+    get Name(): string | undefined;
+
     FooTest(): string;
 }
 class Foo implements IFoo
 {
-    FooTest(): string
+    constructor(name?: string)
+    {
+        this.Name = name;
+    }
+
+    public readonly Name: string | undefined;
+
+    public FooTest(): string
     {
         return "foo";
     }
@@ -65,20 +128,25 @@ class Foo implements IFoo
 const IBarIdentifier = Symbol();
 interface IBar
 {
+    get Name(): string | undefined;
+
     BarTest(): string;
 
     get Foo(): IFoo;
 }
 class Bar implements IBar
 {
-    constructor(foo: IFoo) 
+    constructor(foo: IFoo, name?: string) 
     {
         this.Foo = foo;
+        this.Name = name;
     }
 
     public readonly Foo: IFoo;
 
-    BarTest(): string
+    public readonly Name: string | undefined;
+
+    public BarTest(): string
     {
         return "bar";
     }

@@ -18,6 +18,18 @@ declare module "@amaic/dijs"
         ): void;
 
         /**
+         * Register transient named service with class constructor.
+         * @param interfaceIdentifier unique identifier of interface
+         * @param classType type of service class
+         * @param constructor optional constructor function; delivers type of service class, service provider and if named requested name
+         */
+        RegisterTransientNamedClass<INTERFACE, CLASSTYPE extends ServiceConstructor<INTERFACE>>(
+            interfaceIdentifier: symbol,
+            classType: CLASSTYPE,
+            constructor?: (classType: CLASSTYPE, serviceProvider: IServiceProvider, name?: string) => INTERFACE
+        ): void;
+
+        /**
          * Register transient service with factory.
          * @param interfaceIdentifier unique identifier of interface
          * @param factory service factory function; delivers service provider and if named requested name
@@ -25,6 +37,16 @@ declare module "@amaic/dijs"
         RegisterTransientFactory<INTERFACE>(
             interfaceIdentifier: symbol,
             factory: (serviceProvider: IServiceProvider) => INTERFACE
+        ): void;
+
+        /**
+         * Register transient named service with factory.
+         * @param interfaceIdentifier unique identifier of interface
+         * @param factory service factory function; delivers service provider and if named requested name
+         */
+        RegisterTransientNamedFactory<INTERFACE>(
+            interfaceIdentifier: symbol,
+            factory: (serviceProvider: IServiceProvider, name?: string) => INTERFACE
         ): void;
     }
 }
@@ -34,10 +56,19 @@ ServiceCollection.prototype.RegisterTransientClass = function (id, ct, ctor)
     this.RegisterClass(ServiceRegistrationMode.Single, ServiceType.Transient, id, ct, ctor);
 };
 
+ServiceCollection.prototype.RegisterTransientNamedClass = function (id, ct, ctor)
+{    
+    this.RegisterClass(ServiceRegistrationMode.Single, ServiceType.TransientNamed, id, ct, ctor);
+};
+
 ServiceCollection.prototype.RegisterTransientFactory = function (id, factory)
 {
     this.RegisterFactory(ServiceRegistrationMode.Single, ServiceType.Transient, id, factory);
 };
 
+ServiceCollection.prototype.RegisterTransientNamedFactory = function (id, factory)
+{
+    this.RegisterFactory(ServiceRegistrationMode.Single, ServiceType.TransientNamed, id, factory);
+};
 
 export { ServiceCollection };
