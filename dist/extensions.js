@@ -7,6 +7,12 @@ const dijs_abstractions_1 = require("@amaic/dijs-abstractions");
 dijs_1.ServiceCollection.prototype.RegisterTransientClass = function (id, ct, ctor) {
     this.RegisterClass(dijs_abstractions_1.ServiceRegistrationMode.Single, dijs_abstractions_1.ServiceType.Transient, id, ct, ctor);
 };
+dijs_1.ServiceCollection.prototype.OverwriteTransientClass = function (id, ct, ctor) {
+    this.RegisterClass(dijs_abstractions_1.ServiceRegistrationMode.Overwrite, dijs_abstractions_1.ServiceType.Transient, id, ct, ctor);
+};
+dijs_1.ServiceCollection.prototype.AddTransientClass = function (id, ct, ctor) {
+    this.RegisterClass(dijs_abstractions_1.ServiceRegistrationMode.Multiple, dijs_abstractions_1.ServiceType.Transient, id, ct, ctor);
+};
 dijs_1.ServiceCollection.prototype.RegisterTransientNamedClass = function (id, ct, ctor) {
     this.RegisterClass(dijs_abstractions_1.ServiceRegistrationMode.Single, dijs_abstractions_1.ServiceType.TransientNamed, id, ct, ctor);
 };

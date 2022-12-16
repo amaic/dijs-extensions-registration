@@ -7,6 +7,7 @@ declare module "@amaic/dijs"
     {
         /**
          * Register transient service with class constructor.
+         * Throws exception if same interface identifier already exists.
          * @param interfaceIdentifier unique identifier of interface
          * @param classType type of service class
          * @param constructor optional constructor function; delivers type of service class, service provider and if named requested name
@@ -16,6 +17,33 @@ declare module "@amaic/dijs"
             classType: CLASSTYPE,
             constructor?: (classType: CLASSTYPE, serviceProvider: IServiceProvider) => INTERFACE
         ): void;
+
+        /**
+         * Registers transient service with class constructor.
+         * Overwrites existing registrations for same interface identifier.
+         * @param interfaceIdentifier unique identifier of interface
+         * @param classType type of service class
+         * @param constructor optional constructor function; delivers type of service class, service provider and if named requested name
+         */
+        OverwriteTransientClass<INTERFACE, CLASSTYPE extends ServiceConstructor<INTERFACE>>(
+            interfaceIdentifier: symbol,
+            classType: CLASSTYPE,
+            constructor?: (classType: CLASSTYPE, serviceProvider: IServiceProvider) => INTERFACE
+        ): void;
+
+        /**
+         * Registers transient service with class constructor.
+         * Adds registration to already existing registrations.
+         * @param interfaceIdentifier unique identifier of interface
+         * @param classType type of service class
+         * @param constructor optional constructor function; delivers type of service class, service provider and if named requested name
+         */
+        AddTransientClass<INTERFACE, CLASSTYPE extends ServiceConstructor<INTERFACE>>(
+            interfaceIdentifier: symbol,
+            classType: CLASSTYPE,
+            constructor?: (classType: CLASSTYPE, serviceProvider: IServiceProvider) => INTERFACE
+        ): void;
+
 
         /**
          * Register transient named service with class constructor.
@@ -54,6 +82,14 @@ declare module "@amaic/dijs"
 ServiceCollection.prototype.RegisterTransientClass = function (id, ct, ctor)
 {
     this.RegisterClass(ServiceRegistrationMode.Single, ServiceType.Transient, id, ct, ctor);
+};
+ServiceCollection.prototype.OverwriteTransientClass = function (id, ct, ctor)
+{
+    this.RegisterClass(ServiceRegistrationMode.Overwrite, ServiceType.Transient, id, ct, ctor);
+};
+ServiceCollection.prototype.AddTransientClass = function (id, ct, ctor)
+{
+    this.RegisterClass(ServiceRegistrationMode.Multiple, ServiceType.Transient, id, ct, ctor);
 };
 
 ServiceCollection.prototype.RegisterTransientNamedClass = function (id, ct, ctor)
