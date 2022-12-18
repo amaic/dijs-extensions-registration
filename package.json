@@ -1,7 +1,7 @@
 {
   "name": "@amaic/dijs-extensions-registration",
-  "version": "0.2.0",
-  "description": "npm project template",
+  "version": "0.2.1",
+  "description": "adds more registration methods",
   "main": "dist/index.js",
   "scripts": {
     "delete": "rimraf ./dist/",
