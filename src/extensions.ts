@@ -1,9 +1,9 @@
 import { ServiceCollection } from "@amaic/dijs";
 import { IServiceProvider, ServiceConstructor, ServiceRegistrationMode, ServiceType } from "@amaic/dijs-abstractions";
 
-declare module "@amaic/dijs"
+declare module "@amaic/dijs-abstractions"
 {
-    interface ServiceCollection
+    interface IServiceCollection
     {
         /**
          * Register transient service with class constructor.
@@ -72,6 +72,48 @@ declare module "@amaic/dijs"
          * @param interfaceIdentifier unique identifier of interface
          * @param factory service factory function; delivers service provider and if named requested name
          */
+        RegisterTransientNamedFactory<INTERFACE>(
+            interfaceIdentifier: symbol,
+            factory: (serviceProvider: IServiceProvider, name?: string) => INTERFACE
+        ): void;
+    }
+
+}
+
+declare module "@amaic/dijs"
+{
+    interface ServiceCollection 
+    {
+        RegisterTransientClass<INTERFACE, CLASSTYPE extends ServiceConstructor<INTERFACE>>(
+            interfaceIdentifier: symbol,
+            classType: CLASSTYPE,
+            constructor?: (classType: CLASSTYPE, serviceProvider: IServiceProvider) => INTERFACE
+        ): void;
+
+        OverwriteTransientClass<INTERFACE, CLASSTYPE extends ServiceConstructor<INTERFACE>>(
+            interfaceIdentifier: symbol,
+            classType: CLASSTYPE,
+            constructor?: (classType: CLASSTYPE, serviceProvider: IServiceProvider) => INTERFACE
+        ): void;
+
+        AddTransientClass<INTERFACE, CLASSTYPE extends ServiceConstructor<INTERFACE>>(
+            interfaceIdentifier: symbol,
+            classType: CLASSTYPE,
+            constructor?: (classType: CLASSTYPE, serviceProvider: IServiceProvider) => INTERFACE
+        ): void;
+
+
+        RegisterTransientNamedClass<INTERFACE, CLASSTYPE extends ServiceConstructor<INTERFACE>>(
+            interfaceIdentifier: symbol,
+            classType: CLASSTYPE,
+            constructor?: (classType: CLASSTYPE, serviceProvider: IServiceProvider, name?: string) => INTERFACE
+        ): void;
+
+        RegisterTransientFactory<INTERFACE>(
+            interfaceIdentifier: symbol,
+            factory: (serviceProvider: IServiceProvider) => INTERFACE
+        ): void;
+
         RegisterTransientNamedFactory<INTERFACE>(
             interfaceIdentifier: symbol,
             factory: (serviceProvider: IServiceProvider, name?: string) => INTERFACE

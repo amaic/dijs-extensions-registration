@@ -1,11 +1,12 @@
 import { ServiceCollection } from "@amaic/dijs";
+import { IServiceCollection } from "@amaic/dijs-abstractions";
 import "../src";
 
 describe("extensions", () =>
 {
     test("register transient service with class", () =>
     {
-        const serviceCollection = new ServiceCollection();
+        const serviceCollection: IServiceCollection = new ServiceCollection();
 
         serviceCollection.RegisterTransientClass<IFoo, typeof Foo>(IFooIdentifier, Foo);
 
@@ -28,7 +29,7 @@ describe("extensions", () =>
 
     test("register transient service with factory", () =>
     {
-        const serviceCollection = new ServiceCollection();
+        const serviceCollection: IServiceCollection = new ServiceCollection();
 
         serviceCollection.RegisterTransientFactory<IFoo>(IFooIdentifier, sp => new Foo());
 
@@ -49,7 +50,7 @@ describe("extensions", () =>
 
     test("register transient named service with class", () =>
     {
-        const serviceCollection = new ServiceCollection();
+        const serviceCollection: IServiceCollection = new ServiceCollection();
 
         serviceCollection.RegisterTransientNamedClass<IFoo, typeof Foo>(IFooIdentifier, Foo, (ct, sp, name) =>
             new ct(name)
@@ -78,11 +79,11 @@ describe("extensions", () =>
 
     test("register transient named service with factory", () =>
     {
-        const serviceCollection = new ServiceCollection();
+        const serviceCollection: IServiceCollection = new ServiceCollection();
 
         serviceCollection.RegisterTransientNamedFactory<IFoo>(IFooIdentifier, (sp, name) => new Foo(name));
 
-        serviceCollection.RegisterTransientNamedFactory<IBar>(IBarIdentifier, (sp,name) => new Bar(sp.GetRequiredService<IFoo>(IFooIdentifier, name), name));
+        serviceCollection.RegisterTransientNamedFactory<IBar>(IBarIdentifier, (sp, name) => new Bar(sp.GetRequiredService<IFoo>(IFooIdentifier, name), name));
 
         const serviceProvider = serviceCollection.CreateServiceProvider();
 
