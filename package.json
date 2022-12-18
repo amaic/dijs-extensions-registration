@@ -1,6 +1,6 @@
 {
   "name": "@amaic/dijs-extensions-registration",
-  "version": "0.2.2",
+  "version": "0.2.3",
   "description": "adds more registration methods",
   "main": "dist/index.js",
   "scripts": {
